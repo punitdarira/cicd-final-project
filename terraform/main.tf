@@ -14,6 +14,15 @@ resource "aws_s3_bucket_website_configuration" "static_website_configuration" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "public_access" {
+  bucket = aws_s3_bucket.static_website.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
 resource "aws_s3_bucket_policy" "bucket_policy" {
   bucket = aws_s3_bucket.static_website.id
 
@@ -28,15 +37,9 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
       }
     ]
   })
-}
-
-resource "aws_s3_bucket_public_access_block" "public_access" {
-  bucket = aws_s3_bucket.static_website.id
-
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
+  depends_on = [
+    aws_s3_bucket_public_access_block.public_access
+  ]
 }
 
 locals {
@@ -53,6 +56,7 @@ resource "aws_s3_object" "web_files" {
   key    = each.key
   source = each.value
   content_type = "text/html"
+  etag   = filemd5(each.value)
 }
 
 data "template_file" "app_js" {
