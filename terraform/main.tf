@@ -74,7 +74,6 @@ resource "aws_lambda_function" "text_function" {
   handler       = "handler.handler"
   runtime       = "nodejs22.x"
   role          = aws_iam_role.lambda_exec.arn
-  //source_code_hash = filebase64sha256("../lambda/package.zip")
   filename      = "../lambda/package.zip"
 
     environment {
