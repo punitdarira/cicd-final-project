@@ -34,7 +34,6 @@ static-website
    Navigate to the `lambda` directory and install dependencies:
    ```
    cd lambda
-   npm install
    ```
 
 3. **Deploy the infrastructure using Terraform:**
